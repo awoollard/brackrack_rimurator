@@ -94,29 +94,69 @@ class CardHelper {
     static doesBust (orderedCardValues) {
         return orderedCardValues[0] > 21;
     }
+
+    static highestPlayableHand (orderedCardValues) {
+        switch(orderedCardValues.length) {
+            case 1:
+                return orderedCardValues[0];
+            case 2:
+                if(orderedCardValues[1] <= 21) {
+                    return orderedCardValues[1];
+                }
+                return orderedCardValues[0];
+        }
+    }
 }
 
-var timesBusted = 0;
+var playerWon = 0;
 for(i = 0; i < 1000000; i++) {
     const shoe = new Shoe(8);
 
     shoe.shuffle();
     
-    const playingCards = [
+    const playerCards = [
         shoe.draw(),
-        shoe.draw(),
-        shoe.draw(),
-        shoe.draw(),
+        shoe.draw()
     ];
     
-    const possibleCardValues = CardHelper
-        .returnPossibleCardValues(playingCards);
-    
-    const doesBust = CardHelper
-        .doesBust(possibleCardValues);
+    const dealerCards = [ shoe.draw() ];
+    do {
+        dealerCards.push(shoe.draw());
+        // limitation - hard hands only
+        if(CardHelper.returnPossibleCardValues(dealerCards)[0] > 21)
+            break;
+    } while (CardHelper.returnPossibleCardValues(dealerCards) < 17)
 
-    if(doesBust)
-        timesBusted++;
+    // limitation - hard hands only
+    if(CardHelper.returnPossibleCardValues(dealerCards)[0] > 21)
+        playerWon++;
+        continue;
+
+    // limitation - hard hands only
+    if(CardHelper.returnPossibleCardValues(playerCards)[0] == 21)
+        playerWon++;
+        continue;
+
+    // limitation - hard hands only
+    if(CardHelper.returnPossibleCardValues(dealerCards)[0] == 21)
+        continue;
+
+    const possibleCardValuesPlayer = CardHelper
+        .returnPossibleCardValues(playerCards);
+    const possibleCardValuesDealer = CardHelper
+        .returnPossibleCardValues(dealerCards);
+    
+    // sanity check
+    // limitation - hard hand for player only - assumption stand on two cards cannot > 21
+    if(CardHelper.highestPlayableHand(possibleCardValuesPlayer) > 21)
+        throw Exception();
+        
+    if(CardHelper.highestPlayableHand(possibleCardValuesDealer) > 21)
+        throw Exception();
+    
+    if(CardHelper.highestPlayableHand(possibleCardValuesPlayer) > CardHelper.highestPlayableHand(possibleCardValuesDealer))
+        playerWon++;
+
 }
-console.log(timesBusted / 1000000);
+console.log(playerWon / 1000000);
 //console.log(JSON.stringify({ playingCards, possibleCardValues, doesBust }, null, 2));
