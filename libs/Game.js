@@ -1,4 +1,4 @@
-const { HIT, STAND } = require('./GameActions');
+const { GameActions } = require('./GameActions');
 const { Dealer } = require('./Dealer');
 const { Player } = require('./Player');
 const { Shoe } = require('./Shoe');
@@ -7,6 +7,7 @@ const { Statistics } = require('./Statistics');
 class Game {
     play() {
         const shoe = new Shoe(8);
+        shoe.shuffle()
         const dealer = new Dealer();
         const player = new Player();
         
@@ -15,19 +16,13 @@ class Game {
         dealer.drawUpCard(shoe);
 
         // Player's turn
-        switch (player.makeDecision()) {
-            case HIT:
-                player.hand = [...player.hand, shoe.draw()];
-            case STAND:
-                ; // Dont do nuffin
+        while (player.makeDecision() === GameActions.HIT) {
+            player.hand = [...player.hand, shoe.draw()];
         }
-
+        
         // Dealer's turn
-        switch (dealer.makeDecision()) {
-            case HIT:
-                dealer.hand = [...dealer.hand, shoe.draw()]
-            case STAND:
-                ; // Dont do nuffin
+        while (dealer.makeDecision() === GameActions.HIT) {
+            dealer.hand = [...dealer.hand, shoe.draw()];
         }
         
         const statistics = new Statistics();

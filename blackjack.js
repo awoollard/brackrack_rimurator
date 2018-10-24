@@ -5,14 +5,35 @@ const { Dealer } = require('./libs/Dealer');
 const { Player } = require('./libs/Player');
 const { Game } = require('./libs/Game');
 
+const ProgressBar = require('progress');
+
 let stats = []
-for(i = 0; i < 1000; i++) {
+const games = 100000;
+
+console.log('Simulating 100,000 games')
+
+var bar = new ProgressBar('[:bar] :percent | :eta seconds to go', {
+    complete: '=',
+    incomplete: ' ',
+    width: 20,
+    total: games
+});
+
+for(i = 0; i < games; i++) {
     const game = new Game();
     const statistics = game.play();
-    //console.log(statistics.toString())
+    bar.tick();
     stats = [...stats, statistics]
 }
-console.log(stats.filter(s => s.playerWon).length)
+
+console.log("Player wins: " + stats.filter(s => s.playerWon).length)
+console.log("Player busts: " + stats.filter(s => s.playerBusted).length)
+console.log("Dealer wins: " + stats.filter(s => s.dealerWon).length)
+console.log("Dealer busts: " + stats.filter(s => s.dealerBusted).length)
+console.log("Standoffs: " + stats.filter(s => s.standOff).length)
+console.log("\n")
+console.log("Player win %: " + Math.round((stats.filter(s => s.playerWon).length / stats.filter(s => !s.standOff).length) * 100))
+console.log("Dealer win %: " + Math.round((stats.filter(s => s.dealerWon).length / stats.filter(s => !s.standOff).length) * 100))
 
 if(false) {
     var playerWon = 0;

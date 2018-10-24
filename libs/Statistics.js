@@ -25,8 +25,8 @@ class Statistics {
         }
 
         // Because a hand can have an ace, we refer to their hand as the "best playable hand"
-        playersBestHand = CardHelper.highestPlayableHand(playersHand);
-        dealersBestHand = CardHelper.highestPlayableHand(dealersHand);
+        const playersBestHand = CardHelper.highestPlayableHand(playersHand);
+        const dealersBestHand = CardHelper.highestPlayableHand(dealersHand);
         if(playersBestHand > dealersBestHand) {
             this.playerWon = true;
         } else if(playersBestHand === dealersBestHand) {
@@ -35,7 +35,7 @@ class Statistics {
             this.dealerWon = true;
         }
 
-        this.dealerWon = !playerWon;
+        this.dealerWon = !this.playerWon;
     }
     
     toString() {

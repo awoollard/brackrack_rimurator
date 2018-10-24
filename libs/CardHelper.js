@@ -21,12 +21,12 @@ class CardHelper {
         return orderedCardValues
             .slice()
             .reverse()
-            .find(value = value <= 21);
+            .find(value => value <= 21);
     }
     static hasBusted(hand) {
         return CardHelper.returnPossibleCardValues(hand)
             .filter(value => value <= 21)
-            .length;
+            .length === 0;
     }
 }
 

@@ -14,7 +14,7 @@ class Dealer {
         if (CardHelper.returnPossibleCardValues(this.hand)[0] < 17) {
             return GameActions.HIT
         }
-        return GameActions.HIT;
+        return GameActions.STAND;
     }
 }
 
